@@ -17,6 +17,9 @@ public class PortfolioTrade {
   private TradeType tradeType;
   private LocalDate purchaseDate;
 
+  /** 
+  * javadoc comment.
+  */
   public PortfolioTrade(String symbol, int quantity, LocalDate purchaseDate) {
     this.symbol = symbol;
     this.quantity = quantity;

@@ -1,7 +1,6 @@
 
 package com.crio.warmup.stock;
 
-
 import com.crio.warmup.stock.dto.*;
 import com.crio.warmup.stock.log.UncaughtExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,25 +8,26 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
+//import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+//import java.time.LocalDate;
+//import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
+//import java.util.Collections;
+//import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+//import java.util.stream.Collectors;
+//import java.util.stream.Stream;
 import org.apache.logging.log4j.ThreadContext;
-import org.springframework.web.client.RestTemplate;
+//import org.springframework.web.client.RestTemplate;
 
 
 public class PortfolioManagerApplication {
 
-  // TODO: CRIO_TASK_MODULE_JSON_PARSING
+  // //: CRIO_TASK_MODULE_JSON_PARSING
   //  Task:
   //       - Read the json file provided in the argument[0], The file is available in the classpath.
   //       - Go through all of the trades in the given file,
@@ -44,10 +44,22 @@ public class PortfolioManagerApplication {
   //  1. There can be few unused imports, you will need to fix them to make the build pass.
   //  2. You can use "./gradlew build" to check if your code builds successfully.
 
+  /** 
+  * javadoc comment.
+  */
   public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
 
-     return Collections.emptyList();
+    List<String> symbolsList = new ArrayList<>();
+    File inputFile = resolveFileFromResources(args[0]);
+    ObjectMapper om = getObjectMapper();
+    PortfolioTrade[] portfolioTrades = om.readValue(inputFile, PortfolioTrade[].class);
+    for (PortfolioTrade t:portfolioTrades) {
+      symbolsList.add(t.getSymbol());
+    }
+    return symbolsList;
   }
+
+  
 
 
   // Note:
@@ -59,7 +71,7 @@ public class PortfolioManagerApplication {
 
 
 
-  // Note:
+  // Note: Not for this module
   // 1. You may have to register on Tiingo to get the api_token.
   // 2. Look at args parameter and the module instructions carefully.
   // 2. You can copy relevant code from #mainReadFile to parse the Json.
@@ -86,7 +98,7 @@ public class PortfolioManagerApplication {
   }
 
 
-  // TODO: CRIO_TASK_MODULE_JSON_PARSING
+  // : CRIO_TASK_MODULE_JSON_PARSING (COMPLETED)
   //  Follow the instructions provided in the task documentation and fill up the correct values for
   //  the variables provided. First value is provided for your reference.
   //  A. Put a breakpoint on the first line inside mainReadFile() which says
@@ -114,13 +126,17 @@ public class PortfolioManagerApplication {
   //  make sure its working as expected. use below command to do the same.
   //  ./gradlew test --tests PortfolioManagerApplicationTest.testDebugValues
 
+  /** 
+  * javadoc comment.
+  */
   public static List<String> debugOutputs() {
 
-     String valueOfArgument0 = "trades.json";
-     String resultOfResolveFilePathArgs0 = "";
-     String toStringOfObjectMapper = "";
-     String functionNameFromTestFileInStackTrace = "";
-     String lineNumberFromTestFileInStackTrace = "";
+    String valueOfArgument0 = "trades.json";
+    String resultOfResolveFilePathArgs0 = "/home/crio-user/workspace/monikmali393-ME_QMONEY_V2/qmoney/src/test/resources/assessments/trades.json";
+    String toStringOfObjectMapper = "com.fasterxml.jackson.databind.ObjectMapper@2cd76f31";
+    String functionNameFromTestFileInStackTrace = "PortfolioManagerApplicationTest.mainReadFile()";
+    String lineNumberFromTestFileInStackTrace = "29";
+    
 
 
     return Arrays.asList(new String[]{valueOfArgument0, resultOfResolveFilePathArgs0,
@@ -134,14 +150,14 @@ public class PortfolioManagerApplication {
 
 
 
+  /** 
+  * javadoc comment.
+  */
   public static void main(String[] args) throws Exception {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
     ThreadContext.put("runId", UUID.randomUUID().toString());
 
     printJsonObject(mainReadFile(args));
-
-
-
   }
 }
 
