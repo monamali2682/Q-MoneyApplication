@@ -1,18 +1,18 @@
 
 package com.crio.warmup.stock;
 
-//import com.crio.warmup.stock.dto.PortfolioTrade;
-//import java.time.LocalDate;
+import com.crio.warmup.stock.dto.PortfolioTrade;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-//import java.util.stream.Collectors;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class PortfolioManagerApplicationTest {
 
 
-  // : WARNING!!!
+  // TODO: WARNING!!!
   //  DO NOT MODIFY ANY FILES IN THE TESTS/ ASSESSMENTS UNLESS ASKED TO.
   //  These files are replaced from stock contents while executing the assessments.
   //  Any modifications in this file may result in Assessment failure!
@@ -33,6 +33,19 @@ class PortfolioManagerApplicationTest {
   }
 
 
+  @Test
+  void mainReadQuotes() throws Exception {
+    //given
+    String filename = "trades.json";
+    List<String> expected = Arrays.asList(new String[]{"MSFT", "AAPL", "GOOGL"});
+
+    //when
+    List<String> actual = PortfolioManagerApplication
+        .mainReadQuotes(new String[]{filename, "2019-12-12"});
+
+    //then
+    Assertions.assertEquals(expected, actual);
+  }
 
 
 
