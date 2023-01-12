@@ -187,7 +187,7 @@ public class PortfolioManagerApplication {
        ArrayList<String> ans = new ArrayList<>(); 
 
        for(PortfolioTrade trade : trades){
-        url =  createUrl(trade, enddate, token);
+        url =  prepareUrl(trade, enddate, token);
         TiingoCandle[] tCandles = rt.getForObject(url,TiingoCandle[].class);
         TiingoCandle lastDay = tCandles[tCandles.length-1];
         double closingPrice = lastDay.getClose();
@@ -220,7 +220,7 @@ public class PortfolioManagerApplication {
 
   // TODO:
   //  Build the Url using given parameters and use this function in your code to cann the API.
-  public static String createUrl(PortfolioTrade trade, LocalDate endDate, String token){
+  public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String token){
     //LocalDate startDate = endDate.minusDays(1);
     LocalDate startDate = trade.getPurchaseDate();
     String start = startDate.toString();
