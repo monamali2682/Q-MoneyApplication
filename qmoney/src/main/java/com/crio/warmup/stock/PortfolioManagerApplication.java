@@ -61,23 +61,10 @@ public class PortfolioManagerApplication {
       ans.add(trade.getSymbol());
     }
     return ans;
-    
-
-
   }
-
-
   // Note:
   // 1. You may need to copy relevant code from #mainReadQuotes to parse the Json.
   // 2. Remember to get the latest quotes from Tiingo API.
-
-
-
-
-
-
-
-
 
   // TODO: CRIO_TASK_MODULE_REST_API
   //  Find out the closing price of each stock on the end_date and return the list
@@ -89,8 +76,6 @@ public class PortfolioManagerApplication {
   // 2. You can copy relevant code from #mainReadFile to parse the Json.
   // 3. Use RestTemplate#getForObject in order to call the API,
   //    and deserialize the results in List<Candle>
-
-
 
   private static void printJsonObject(Object object) throws IOException {
     Logger logger = Logger.getLogger(PortfolioManagerApplication.class.getCanonicalName());
@@ -108,7 +93,7 @@ public class PortfolioManagerApplication {
     objectMapper.registerModule(new JavaTimeModule());
     return objectMapper;
   }
-
+  
 
   // TODO: CRIO_TASK_MODULE_JSON_PARSING
   //  Follow the instructions provided in the task documentation and fill up the correct values for
@@ -137,73 +122,84 @@ public class PortfolioManagerApplication {
   //  Once you are done with above, just run the corresponding test and
   //  make sure its working as expected. use below command to do the same.
   //  ./gradlew test --tests PortfolioManagerApplicationTest.testDebugValues
-
-
-//   Now that you are all setup with Tiingo, use it to retrieve the closing price of stocks on a given (historical) date. Create URLs using your API token to collect this data.
-
-// The end date is passed as the second argument in the input parameters.
-
-// Modify mainReadQuotes(String[] args) by reading the TODOs.
-
-// Sort the stocks in ascending order of their closing price.
-
-// Return the list of sorted stocks.
-
-// Test your code by running the following command in the terminal:
-
   public static List<String> debugOutputs() {
 
-     String valueOfArgument0 = "trades.json";
+    String valueOfArgument0 = "trades.json";
 
 
-     String resultOfResolveFilePathArgs0 = "/home/crio-user/workspace/shivanshs977-ME_QMONEY_V2/qmoney/bin/main/trades.json";
-     String toStringOfObjectMapper = "com.fasterxml.jackson.databind.ObjectMapper@5542c4ed";
-     String functionNameFromTestFileInStackTrace = "PortfolioManagerApplicationTest.mainReadFile()";
-     String lineNumberFromTestFileInStackTrace = "29";
+    String resultOfResolveFilePathArgs0 = "/home/crio-user/workspace/shivanshs977-ME_QMONEY_V2/qmoney/bin/main/trades.json";
+    String toStringOfObjectMapper = "com.fasterxml.jackson.databind.ObjectMapper@5542c4ed";
+    String functionNameFromTestFileInStackTrace = "PortfolioManagerApplicationTest.mainReadFile()";
+    String lineNumberFromTestFileInStackTrace = "29";
 // 20fc3ace9581a5beb1594642fee6a83d67644b07  api token
 
-    return Arrays.asList(new String[]{valueOfArgument0, resultOfResolveFilePathArgs0,
-        toStringOfObjectMapper, functionNameFromTestFileInStackTrace,
-        lineNumberFromTestFileInStackTrace});
+   return Arrays.asList(new String[]{valueOfArgument0, resultOfResolveFilePathArgs0,
+       toStringOfObjectMapper, functionNameFromTestFileInStackTrace,
+       lineNumberFromTestFileInStackTrace});
   }
 
-  public static Double getClosingPriceOnEndDate(List<Candle> candles) {
-    return candles.get(candles.size() - 1).getClose();
-  }
-  
-  
-  public static List<Candle> fetchCandles(PortfolioTrade trade, LocalDate endDate, String token) {
-    String url = prepareUrl(trade, endDate, token);
-    RestTemplate restTemplate = new RestTemplate();
-    Candle[] candles = restTemplate.getForObject(url, TiingoCandle[].class);
-    return Arrays.asList(candles);
-    
-  }
-  
 
+//            MODULE 2 
+//   Now that you are all setup with Tiingo, use it to retrieve the closing price of stocks on a given (historical) date. Create URLs using your API token to collect this data.
+// The end date is passed as the second argument in the input parameters.
+// Modify mainReadQuotes(String[] args) by reading the TODOs.
+// Sort the stocks in ascending order of their closing price.
+// Return the list of sorted stocks.
+// Test your code by running the following command in the terminal:
+
+ 
+
+  // public static Double getClosingPriceOnEndDate(List<Candle> candles) {
+  //   return candles.get(candles.size() - 1).getClose();
+  // }
+  
+  
+  // public static List<Candle> fetchCandles(PortfolioTrade trade, LocalDate endDate, String token) {
+  //   String url = prepareUrl(trade, endDate, token);
+  //   RestTemplate restTemplate = new RestTemplate();
+  //   Candle[] candles = restTemplate.getForObject(url, TiingoCandle[].class);
+  //   return Arrays.asList(candles); 
+  // }
+  
+  // String  apiToken = "41d27a76d414a09be33e5b96e326df9f406e0876";
   // Remember to confirm that you are getting same results for annualized returns as in Module 3.
-  public static List<String> mainReadQuotes(String[] args) throws Exception,NestedRuntimeException, RuntimeException,IOException, URISyntaxException {
-//      String  apiToken = "20fc3ace9581a5beb1594642fee6a83d67644b07";
+  static class StockComparator implements Comparator<TotalReturnsDto>{
 
-List<PortfolioTrade> pma = readTradesFromJson(args[0]);
-List<TotalReturnsDto> list = new ArrayList<>();
-for (int i = 0; i < pma.size(); i++) {
-  List<Candle> candles = fetchCandles(pma.get(i), LocalDate.parse(args[1]), "41d27a76d414a09be33e5b96e326df9f406e0876");
-  Double closingPrice=getClosingPriceOnEndDate(candles);
-  list.add(new TotalReturnsDto(pma.get(i).getSymbol(), closingPrice));
-}
-Collections.sort(list, new Comparator<TotalReturnsDto>() {
-  @Override
-  public int compare(TotalReturnsDto p1, TotalReturnsDto p2) {
-    return p1.getClosingPrice() > p2.getClosingPrice() ? 1 : -1;
+    @Override
+    public int compare(TotalReturnsDto dto1, TotalReturnsDto dto2) {
+      if(dto1.getClosingPrice()<dto2.getClosingPrice()){
+        return -1;
+      }
+      else if(dto1.getClosingPrice()>dto2.getClosingPrice()){
+        return 1;
+      }
+      return 0;
+    }
+
   }
-});
-List<String> ans = new ArrayList<>();
-for (TotalReturnsDto t : list) {
-  ans.add(t.getSymbol());
-}
-return ans;
+  public static List<String> mainReadQuotes(String[] args) throws Exception,NestedRuntimeException, RuntimeException,IOException, URISyntaxException {    
+       List<PortfolioTrade> trades = readTradesFromJson(args[0]);  
+       String token = "20fc3ace9581a5beb1594642fee6a83d67644b07";
+       LocalDate enddate = LocalDate.parse(args[1]);
+       String url="";
+       RestTemplate rt = new RestTemplate();
+       ArrayList<TotalReturnsDto> TotalReturnsDtoList = new ArrayList<>();
+       ArrayList<String> ans = new ArrayList<>(); 
 
+       for(PortfolioTrade trade : trades){
+        url =  createUrl(trade, enddate, token);
+        TiingoCandle[] tCandles = rt.getForObject(url,TiingoCandle[].class);
+        TiingoCandle lastDay = tCandles[tCandles.length-1];
+        double closingPrice = lastDay.getClose();
+        TotalReturnsDto dto = new TotalReturnsDto(trade.getSymbol(), closingPrice);
+        TotalReturnsDtoList.add(dto);
+       }
+       
+       Collections.sort(TotalReturnsDtoList,new StockComparator());
+       for(TotalReturnsDto dto : TotalReturnsDtoList){
+        ans.add(dto.getSymbol());
+       }
+       return ans;     
   }
 
   // TODO:
@@ -218,43 +214,68 @@ return ans;
     for(PortfolioTrade trades:trade){
       ans.add(trades);
     }
-     return ans;
+    return ans;
   }
 
 
   // TODO:
   //  Build the Url using given parameters and use this function in your code to cann the API.
-  public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String token){
-    // StringBuilder string = new StringBuilder();
-    // String startDate = endDate.toString();
-    // string.append("https://api.tiingo.com/tiingo/daily/");
-    // string.append(trade.getSymbol());
-    // string.append("/prices?startDate=");
-    // string.append(startDate);
-    // string.append("&endDate=");
-    // string.append(startDate);
-    // string.append("&token=");
-    // string.append(token);
-
-    //  return string.toString();
-    String url = "https://api.tiingo.com/tiingo/daily/" + trade.getSymbol()
-    + "/prices?startDate="
-    + trade.getPurchaseDate() + "&endDate=" + endDate.toString()
-    + "&token="+token;
+  public static String createUrl(PortfolioTrade trade, LocalDate endDate, String token){
+    //LocalDate startDate = endDate.minusDays(1);
+    LocalDate startDate = trade.getPurchaseDate();
+    String start = startDate.toString();
+    String end = endDate.toString();
+    String url = "https://api.tiingo.com/tiingo/daily/" + trade.getSymbol()+ "/prices?startDate=" + start + "&endDate="
+        + end + "&token=" + token;
     return url;
-
   }
 
   public static void main(String[] args) throws Exception {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
     ThreadContext.put("runId", UUID.randomUUID().toString());
     // System.out.println(args.length);
-
     printJsonObject(mainReadFile(args));
-
-
     printJsonObject(mainReadQuotes(args));
+  }
+  // public static List<String> mainReadQuotes(String[] args) throws Exception,NestedRuntimeException, RuntimeException,IOException, URISyntaxException {    
+  //   List<PortfolioTrade> pma = readTradesFromJson(args[0]);
+  //   List<TotalReturnsDto> list = new ArrayList<>();
+  //   for (int i = 0; i < pma.size(); i++) {
+  //     List<Candle> candles = fetchCandles(pma.get(i), LocalDate.parse(args[1]), "41d27a76d414a09be33e5b96e326df9f406e0876");
+  //     Double closingPrice=getClosingPriceOnEndDate(candles);
+  //     list.add(new TotalReturnsDto(pma.get(i).getSymbol(), closingPrice));
+  //   }
+  //   Collections.sort(list, new Comparator<TotalReturnsDto>() {
+  //     @Override
+  //     public int compare(TotalReturnsDto p1, TotalReturnsDto p2) {
+  //       return p1.getClosingPrice() > p2.getClosingPrice() ? 1 : -1;
+  //     }
+  //   });
+  //   List<String> ans = new ArrayList<>();
+  //   for (TotalReturnsDto t : list) {
+  //     ans.add(t.getSymbol());
+  //   }
+  //   return ans;
 
+  // }
+  // public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String token){
+  //   // StringBuilder string = new StringBuilder();
+  //   // String startDate = endDate.toString();
+  //   // string.append("https://api.tiingo.com/tiingo/daily/");
+  //   // string.append(trade.getSymbol());
+  //   // string.append("/prices?startDate=");
+  //   // string.append(startDate);
+  //   // string.append("&endDate=");
+  //   // string.append(startDate);
+  //   // string.append("&token=");
+  //   // string.append(token);
 
-  
-  }}
+  //   //  return string.toString();
+  //   String url = "https://api.tiingo.com/tiingo/daily/" + trade.getSymbol()
+  //   + "/prices?startDate="
+  //   + trade.getPurchaseDate() + "&endDate=" + endDate.toString()
+  //   + "&token="+token;
+  //   return url;
+
+  // }
+}
