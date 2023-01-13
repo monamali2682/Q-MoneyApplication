@@ -80,12 +80,12 @@ public class PortfolioManagerApplication {
 
   public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
     List<String>ans = new ArrayList<>();
-    ObjectMapper objectMapper =  getObjectMapper();
-    File inputFile = resolveFileFromResources(args[0]);
-    PortfolioTrade[] portfolioTrade = objectMapper.readValue(inputFile, PortfolioTrade[].class);
-    for(PortfolioTrade trade: portfolioTrade){
-      ans.add(trade.getSymbol());
-    }
+    // ObjectMapper objectMapper =  getObjectMapper();
+    // File inputFile = resolveFileFromResources(args[0]);
+    // PortfolioTrade[] portfolioTrade = objectMapper.readValue(inputFile, PortfolioTrade[].class);
+    // for(PortfolioTrade trade: portfolioTrade){
+    //   ans.add(trade.getSymbol());
+    // }
     return ans;
   }
   // Note:
