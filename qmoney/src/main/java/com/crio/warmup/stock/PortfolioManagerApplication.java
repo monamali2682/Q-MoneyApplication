@@ -50,7 +50,11 @@ public class PortfolioManagerApplication {
   //  Note:
   //  1. There can be few unused imports, you will need to fix them to make the build pass.
   //  2. You can use "./gradlew build" to check if your code builds successfully.
-  public final static String token = "40ca5a4cfa8620713885f6cce25b02abf6c24004";
+  //public final static String token = "40ca5a4cfa8620713885f6cce25b02abf6c24004";  saket
+  //public final static String token = "41d27a76d414a09be33e5b96e326df9f406e0876"; monika
+  public final static String token = "3fb5ead0bff913defd942151957ca85688fd3067"; 
+  
+  
 
   static class StockComparator implements Comparator<TotalReturnsDto>{
     @Override
