@@ -185,7 +185,7 @@ public class PortfolioManagerApplication {
   
   public static List<String> mainReadQuotes(String[] args) throws Exception,NestedRuntimeException, RuntimeException,IOException, URISyntaxException {    
        List<PortfolioTrade> trades = readTradesFromJson(args[0]);  
-       String token = "20fc3ace9581a5beb1594642fee6a83d67644b07";
+       //String token = "40ca5a4cfa8620713885f6cce25b02abf6c24004";
        LocalDate enddate = LocalDate.parse(args[1]);
        ArrayList<TotalReturnsDto> TotalReturnsDtoList = new ArrayList<>();
        for(PortfolioTrade trade : trades){
