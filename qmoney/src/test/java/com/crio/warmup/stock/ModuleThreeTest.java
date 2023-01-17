@@ -88,7 +88,3 @@ class ModuleThreeTest {
   }
 
 }
-//Assertions.assertEquals(0.141, result.get(0).getAnnualizedReturn(), 0.01); 0.091
-//Assertions.assertEquals(0.091, result.get(1).getAnnualizedReturn(), 0.01); 0.05
-//Assertions.assertEquals(0.056, result.get(2).getAnnualizedReturn(), 0.01);
-//Assertions.assertEquals(Arrays.asList(new String[]{"ABBV", "CTS", "MMM"}), symbols);

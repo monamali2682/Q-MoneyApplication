@@ -9,6 +9,10 @@ import com.fasterxml.jackson.databind.Module;
 import com.crio.warmup.stock.log.UncaughtExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidNullException;
+import com.crio.warmup.stock.log.UncaughtExceptionHandler;
+import com.crio.warmup.stock.portfolio.PortfolioManager;
+import com.crio.warmup.stock.portfolio.PortfolioManagerFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +25,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -82,16 +88,16 @@ public class PortfolioManagerApplication {
     }
   }
 
-  public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
-    List<String>ans = new ArrayList<>();
-    ObjectMapper objectMapper =  getObjectMapper();
-    File inputFile = resolveFileFromResources(args[0]);
-    PortfolioTrade[] portfolioTrade = objectMapper.readValue(inputFile, PortfolioTrade[].class);
-    for(PortfolioTrade trade: portfolioTrade){
-      ans.add(trade.getSymbol());
-    }
-    return ans;
-  }
+  // public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
+  //   List<String>ans = new ArrayList<>();
+  //   ObjectMapper objectMapper =  getObjectMapper();
+  //   File inputFile = resolveFileFromResources(args[0]);
+  //   PortfolioTrade[] portfolioTrade = objectMapper.readValue(inputFile, PortfolioTrade[].class);
+  //   for(PortfolioTrade trade: portfolioTrade){
+  //     ans.add(trade.getSymbol());
+  //   }
+  //   return ans;
+  // }
   // Note:
   // 1. You may need to copy relevant code from #mainReadQuotes to parse the Json.
   // 2. Remember to get the latest quotes from Tiingo API.
@@ -106,6 +112,16 @@ public class PortfolioManagerApplication {
   // 2. You can copy relevant code from #mainReadFile to parse the Json.
   // 3. Use RestTemplate#getForObject in order to call the API,
   //    and deserialize the results in List<Candle>
+  public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
+    List<String>ans = new ArrayList<>();
+    ObjectMapper objectMapper =  getObjectMapper();
+    File inputFile = resolveFileFromResources(args[0]);
+    PortfolioTrade[] portfolioTrade = objectMapper.readValue(inputFile, PortfolioTrade[].class);
+    for(PortfolioTrade trade: portfolioTrade){
+      ans.add(trade.getSymbol());
+    }
+    return ans;
+  }
 
   private static void printJsonObject(Object object) throws IOException {
     Logger logger = Logger.getLogger(PortfolioManagerApplication.class.getCanonicalName());
@@ -303,11 +319,50 @@ public class PortfolioManagerApplication {
         return new AnnualizedReturn(trade.getSymbol(), annualizedReturn, totalReturns);
   }
 
+
+  // TODO: CRIO_TASK_MODULE_REFACTOR
+  //  Once you are done with the implementation inside PortfolioManagerImpl and
+  //  PortfolioManagerFactory, create PortfolioManager using PortfolioManagerFactory.
+  //  Refer to the code from previous modules to get the List<PortfolioTrades> and endDate, and
+  //  call the newly implemented method in PortfolioManager to calculate the annualized returns.
+
+  // Note:
+  // Remember to confirm that you are getting same results for annualized returns as in Module 3.
+  
+  
+  // public static List<AnnualizedReturn> mainCalculateReturnsAfterRefactor(String[] args)
+  //     throws Exception {
+  //      String file = args[0];
+  //      LocalDate endDate = LocalDate.parse(args[1]);
+  //      String contents = readFileAsString(file);
+  //      ObjectMapper objectMapper = getObjectMapper();
+  //      return portfolioManager.calculateAnnualizedReturn(Arrays.asList(portfolioTrades), endDate);
+  // }
+  public static List<PortfolioTrade> mainReadjson(String[] args) throws IOException, URISyntaxException {
+    List<PortfolioTrade>ans = new ArrayList<>();
+    ObjectMapper objectMapper =  getObjectMapper();
+    File inputFile = resolveFileFromResources(args[0]);
+    PortfolioTrade[] portfolioTrade = objectMapper.readValue(inputFile, PortfolioTrade[].class);
+    for(PortfolioTrade trade: portfolioTrade){
+      ans.add(trade);
+    }
+    return ans;
+  }
+
+  public static List<AnnualizedReturn> mainCalculateReturnsAfterRefactor(String[] args)
+      throws Exception {
+       LocalDate endDate = LocalDate.parse(args[1]);
+       List<PortfolioTrade> portfolioTrades = mainReadjson(args);
+       RestTemplate restTemplate = new RestTemplate();
+       PortfolioManager portfolioManager = PortfolioManagerFactory.getPortfolioManager(restTemplate);
+       return portfolioManager.calculateAnnualizedReturn(portfolioTrades, endDate);
+  }
+
+
   public static void main(String[] args) throws Exception {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
     ThreadContext.put("runId", UUID.randomUUID().toString());
-    printJsonObject(mainCalculateSingleReturn(args));
-
+    printJsonObject(mainCalculateReturnsAfterRefactor(args));
   }
 }
 
