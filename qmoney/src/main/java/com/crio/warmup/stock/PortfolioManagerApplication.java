@@ -1,3 +1,4 @@
+
 package com.crio.warmup.stock;
 
 
@@ -363,6 +364,7 @@ public class PortfolioManagerApplication {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
     ThreadContext.put("runId", UUID.randomUUID().toString());
     printJsonObject(mainCalculateReturnsAfterRefactor(args));
+
   }
 }
 
