@@ -355,9 +355,29 @@ public class PortfolioManagerApplication {
        LocalDate endDate = LocalDate.parse(args[1]);
        List<PortfolioTrade> portfolioTrades = mainReadjson(args);
        RestTemplate restTemplate = new RestTemplate();
-       PortfolioManager portfolioManager = PortfolioManagerFactory.getPortfolioManager(restTemplate);
+       String provider = args[2];
+       PortfolioManager portfolioManager = PortfolioManagerFactory.getPortfolioManager(provider,restTemplate);
        return portfolioManager.calculateAnnualizedReturn(portfolioTrades, endDate);
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   public static void main(String[] args) throws Exception {
