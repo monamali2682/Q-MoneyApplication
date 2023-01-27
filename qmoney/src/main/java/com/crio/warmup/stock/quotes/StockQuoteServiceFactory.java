@@ -24,10 +24,12 @@ public enum StockQuoteServiceFactory {
 
   public static StockQuotesService getService(String provider,  RestTemplate restTemplate) {
       StockQuotesService stockQuotesService;
-      // if(provider == null){
-      //   stockQuotesService = new AlphavantageService(restTemplate);
-      // }
-      if(provider.equalsIgnoreCase("tiingo")){
+      //System.out.println(provider);
+
+      if(provider==null){
+        stockQuotesService = new AlphavantageService(restTemplate);
+      }
+      else if(provider.equalsIgnoreCase("tiingo")){
         stockQuotesService = new TiingoService(restTemplate);
       }
       else{
