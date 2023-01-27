@@ -56,7 +56,7 @@ public class AlphavantageService implements StockQuotesService {
       throws JsonProcessingException {
         String url =  buildUri(symbol, from, to);
         String jsonString = restTemplate.getForObject(url,String.class);
-        System.out.println(jsonString);
+        //System.out.println(jsonString);
         List<Candle> candles = getAllcandles(jsonString,from,to);
         Collections.sort(candles,new CandleComparator());
         return candles;
