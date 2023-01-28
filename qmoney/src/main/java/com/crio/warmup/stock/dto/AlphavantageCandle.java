@@ -53,7 +53,6 @@ public class AlphavantageCandle implements Candle {
 
   @Override
   public LocalDate getDate() {
-    // TODO Auto-generated method stub
     return date;
   }
 
@@ -62,4 +61,7 @@ public class AlphavantageCandle implements Candle {
   }
   
 }
+
+
+
 

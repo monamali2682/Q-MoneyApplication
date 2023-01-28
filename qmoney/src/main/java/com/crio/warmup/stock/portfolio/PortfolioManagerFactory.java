@@ -40,4 +40,11 @@ public class PortfolioManagerFactory {
       return portfoliomanager;
    }
 
+  // public static PortfolioManager getPortfolioManager(RestTemplate restTemplate) {
+
+  // }
+
+
+
+
 }

@@ -8,6 +8,7 @@ import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.PortfolioTrade;
 import com.crio.warmup.stock.dto.TiingoCandle;
+import com.crio.warmup.stock.exception.StockQuoteServiceException;
 import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +37,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
   
 
 
+
   // Caution: Do not delete or modify the constructor, or else your build will break!
   // This is absolutely necessary for backward compatibility
   protected PortfolioManagerImpl(RestTemplate restTemplate) {
@@ -60,9 +62,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
   //CHECKSTYLE:OFF
 
-  private Comparator<AnnualizedReturn> getComparator() {
-    return Comparator.comparing(AnnualizedReturn::getAnnualizedReturn).reversed();
-  }
+  
 
   //CHECKSTYLE:OFF
 
@@ -91,7 +91,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
   //       return candles;
   // }
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
-      throws JsonProcessingException {
+      throws JsonProcessingException, StockQuoteServiceException {
         List<Candle> candles = StockQuoteService.getStockQuote(symbol, from, to);
         // String url =  buildUri(symbol, from, to);
         // // RestTemplate rt = new RestTemplate();
@@ -106,8 +106,8 @@ public class PortfolioManagerImpl implements PortfolioManager {
             
             String start = startDate.toString();
             String end = endDate.toString();
-            String url = "https://api.tiingo.com/tiingo/daily/$" + symbol+ "/prices?startDate=$" + start + "&endDate=$"
-                + end + "&token=$" + token;
+            String url = "https://api.tiingo.com/tiingo/daily/" + symbol+ "/prices?startDate=" + start + "&endDate="
+                + end + "&token=" + token;
             return url;
   }
 
@@ -127,7 +127,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
   @Override
   public List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> trades,
-      LocalDate enddate) throws JsonProcessingException {
+      LocalDate enddate) throws JsonProcessingException, StockQuoteServiceException {
     
         // String filename = args[0];
         // LocalDate enddate = LocalDate.parse(args[1]);
@@ -145,8 +145,17 @@ public class PortfolioManagerImpl implements PortfolioManager {
         } 
         Collections.sort(ans, getComparator());
         return ans;
+
   }
 
+
+
+
+
+  private Comparator<AnnualizedReturn> getComparator() {
+    return Comparator.comparing(AnnualizedReturn::getAnnualizedReturn).reversed();
+  }
+  
 
 
   // ¶TODO: CRIO_TASK_MODULE_ADDITIONAL_REFACTOR

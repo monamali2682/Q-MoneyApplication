@@ -1,3 +1,4 @@
+
 package com.crio.warmup.stock.quotes;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -16,7 +17,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import com.crio.warmup.stock.exception.StockQuoteServiceException;
+
+// import com.crio.warmup.stock.dto.AlphavantageDailyResponse;
+// import com.crio.warmup.stock.dto.Candle;
+// import com.crio.warmup.stock.exception.StockQuoteServiceException;
+// import com.fasterxml.jackson.core.JsonProcessingException;
+// import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+// import java.time.LocalDate;
+// import java.util.Comparator;
+// import java.util.List;
+// import java.util.stream.Collectors;
 import org.springframework.web.client.RestTemplate;
 
 public class AlphavantageService implements StockQuotesService {
@@ -51,33 +63,46 @@ public class AlphavantageService implements StockQuotesService {
             + "&outputsize=full&apikey=" + token;
           return url;
   } 
+
   @Override
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
-      throws JsonProcessingException {
+      throws JsonProcessingException,StockQuoteServiceException,RuntimeException {
+        List<Candle> candles = new ArrayList<>();
+        if(from.compareTo(to)>=0){
+          throw new RuntimeException("End date should be more than purchase date");
+        }
         String url =  buildUri(symbol, from, to);
-        String jsonString = restTemplate.getForObject(url,String.class);
-        //System.out.println(jsonString);
-        List<Candle> candles = getAllcandles(jsonString,from,to);
-        Collections.sort(candles,new CandleComparator());
+        try {
+          String jsonString = restTemplate.getForObject(url,String.class);
+          //System.out.println(jsonString);
+          candles = getAllcandles(jsonString,from,to);
+          Collections.sort(candles,new CandleComparator());
+        } 
+        catch (NullPointerException e) {
+          throw new StockQuoteServiceException("Alphavantage returned invalid response", e.getCause());
+        }
         return candles;
   }
 
-  public List<Candle> getAllcandles(String jsonString,LocalDate from, LocalDate to) throws JsonMappingException, JsonProcessingException{
-        ObjectMapper objMapper = new ObjectMapper();
-        objMapper.registerModule(new JavaTimeModule());
-        AlphavantageDailyResponse alphavantageDailyResponse = objMapper.readValue(jsonString, AlphavantageDailyResponse.class);
-        Map<LocalDate, AlphavantageCandle> candlemap = alphavantageDailyResponse.getCandles();
-        // String startdate = from.toString();
-        // String enddate = to.toString();
-        List<Candle> candles= new ArrayList<>();
-        for(Map.Entry<LocalDate, AlphavantageCandle> entry :candlemap.entrySet()){
-          LocalDate curr = entry.getKey();
-          if( ( ! curr.isBefore(from) ) && ( ! curr.isAfter( to) )){
-            Candle c =  entry.getValue();
-            c.setDate(entry.getKey());
-            candles.add(c);
+  public List<Candle> getAllcandles(String jsonString,LocalDate from, LocalDate to) throws JsonMappingException, JsonProcessingException,NullPointerException{
+        //try{
+          ObjectMapper objMapper = new ObjectMapper();
+          objMapper.registerModule(new JavaTimeModule());
+          AlphavantageDailyResponse alphavantageDailyResponse = objMapper.readValue(jsonString, AlphavantageDailyResponse.class);
+          Map<LocalDate, AlphavantageCandle> candlemap = alphavantageDailyResponse.getCandles();
+          List<Candle> candles= new ArrayList<>();
+          for(Map.Entry<LocalDate, AlphavantageCandle> entry :candlemap.entrySet()){
+            LocalDate curr = entry.getKey();
+            if( ( ! curr.isBefore(from) ) && ( ! curr.isAfter( to) )){
+              Candle c =  entry.getValue();
+              c.setDate(entry.getKey());
+              candles.add(c);
+            }
           }
-        }
+        //}
+        // catch(NullPointerException e){
+        //   throw new NullPointerException();
+        // }
         return candles;
   }
 
@@ -108,6 +133,13 @@ public class AlphavantageService implements StockQuotesService {
   //  1. Write a method to create appropriate url to call Alphavantage service. The method should
   //     be using configurations provided in the {@link @application.properties}.
   //  2. Use this method in #getStockQuote.
+  // TODO: CRIO_TASK_MODULE_EXCEPTIONS
+  //   1. Update the method signature to match the signature change in the interface.
+  //   2. Start throwing new StockQuoteServiceException when you get some invalid response from
+  //      Alphavantage, or you encounter a runtime exception during Json parsing.
+  //   3. Make sure that the exception propagates all the way from PortfolioManager, so that the
+  //      external user's of our API are able to explicitly handle this exception upfront.
+  //CHECKSTYLE:OFF
 
 }
 

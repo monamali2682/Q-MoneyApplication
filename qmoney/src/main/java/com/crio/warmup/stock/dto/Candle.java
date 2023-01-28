@@ -15,5 +15,6 @@ public interface Candle {
 
   LocalDate getDate();
 
-  void setDate(LocalDate date);
+void setDate(LocalDate key);
+
 }

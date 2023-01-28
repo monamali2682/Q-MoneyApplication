@@ -348,6 +348,7 @@ public class PortfolioManagerApplication {
       ans.add(trade);
     }
     return ans;
+    // Arrays.toList(portfolioTrade)
   }
 
   public static List<AnnualizedReturn> mainCalculateReturnsAfterRefactor(String[] args)
@@ -384,6 +385,9 @@ public class PortfolioManagerApplication {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
     ThreadContext.put("runId", UUID.randomUUID().toString());
     printJsonObject(mainCalculateReturnsAfterRefactor(args));
+
+
+
 
   }
 }
