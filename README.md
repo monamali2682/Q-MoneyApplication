@@ -1,4 +1,4 @@
-Q-MoneyApplication
+
 QMoney is a stock portfolio analyzer. It helps portfolio managers to make trade recommendations to their clients.
 - Implemented the core logic of portfolio manager and published it as library
 - Used Tiingo Rest API to fetch stock quotes
